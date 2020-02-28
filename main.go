@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -40,12 +41,17 @@ func main() {
 	router.HandleFunc("/suggestions", getSuggestions).Methods("GET")
 
 	fmt.Println("Listen and Server")
-	corsObj := handlers.AllowedOrigins([]string{"*"})
-	log.Fatal(http.ListenAndServe(":8888", handlers.CORS(corsObj)(router)))
+	log.Fatal(http.ListenAndServe(":8888", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)))
 }
 
 func suggestions(rw http.ResponseWriter, rq *http.Request) {
-
+	rw.Header().Set("Content-Type", "application/json")
+	var newLunchSpot LunchSpot
+	_ = json.NewDecoder(rq.Body).Decode(newLunchSpot)
+	id := strconv.Itoa(len(lunchSpots) + 1)
+	newLunchSpot.ID = id
+	lunchSpots = append(lunchSpots, newLunchSpot)
+	json.NewEncoder(rw).Encode(&lunchSpots)
 }
 
 func getSuggestions(rw http.ResponseWriter, rq *http.Request) {
