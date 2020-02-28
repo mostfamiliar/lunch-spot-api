@@ -37,21 +37,21 @@ func main() {
 	spot4 := LunchSpot{"4", "Por Que No?", "Tacos and bowls", "3524 N Mississippi Ave, Portland, OR 97227", "https://porquenotacos.com/", 3}
 	lunchSpots = append(lunchSpots, spot1, spot2, spot3, spot4)
 
-	router.HandleFunc("/suggestions", suggestions).Methods("POST")
+	router.HandleFunc("/suggestions", createSuggestions).Methods("POST")
 	router.HandleFunc("/suggestions", getSuggestions).Methods("GET")
 
 	fmt.Println("Listen and Server")
 	log.Fatal(http.ListenAndServe(":8888", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)))
 }
 
-func suggestions(rw http.ResponseWriter, rq *http.Request) {
+func createSuggestions(rw http.ResponseWriter, rq *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 	var newLunchSpot LunchSpot
-	_ = json.NewDecoder(rq.Body).Decode(newLunchSpot)
+	_ = json.NewDecoder(rq.Body).Decode(&newLunchSpot)
 	id := strconv.Itoa(len(lunchSpots) + 1)
 	newLunchSpot.ID = id
 	lunchSpots = append(lunchSpots, newLunchSpot)
-	json.NewEncoder(rw).Encode(&lunchSpots)
+	json.NewEncoder(rw).Encode(&newLunchSpot)
 }
 
 func getSuggestions(rw http.ResponseWriter, rq *http.Request) {
