@@ -18,6 +18,8 @@ type LunchSpot struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	Address     string `json:"address"`
+	Link        string `json:"link"`
 	Votes       int    `json:"votes"`
 }
 
@@ -28,9 +30,11 @@ func main() {
 	router := mux.NewRouter()
 
 	// Create new lunchSpots for testing
-	spot1 := LunchSpot{"1", "Shalom Y'all", "Delicious Israeli food", 3}
-	spot2 := LunchSpot{"1", "Kati Thai", "Vegetarian Thai food", 5}
-	lunchSpots = append(lunchSpots, spot1, spot2)
+	spot1 := LunchSpot{"1", "Shalom Y'all", "Delicious Israeli food", "117 SE Taylor #101, Portland, OR 97214", "https://www.shalomyallpdx.com/", 3}
+	spot2 := LunchSpot{"2", "Kati Thai", "Vegetarian Thai food", "2932 SE Division St, Portland, OR 97202", "http://www.katiportland.com/", 5}
+	spot3 := LunchSpot{"3", "XLB", "Chinese comfort food and baozi", "4090 N Williams Ave, Portland, OR 97227", "https://www.xlbpdx.com/", 8}
+	spot4 := LunchSpot{"4", "Por Que No?", "Tacos and bowls", "3524 N Mississippi Ave, Portland, OR 97227", "https://porquenotacos.com/", 3}
+	lunchSpots = append(lunchSpots, spot1, spot2, spot3, spot4)
 
 	router.HandleFunc("/suggestions", suggestions).Methods("POST")
 	router.HandleFunc("/suggestions", getSuggestions).Methods("GET")
